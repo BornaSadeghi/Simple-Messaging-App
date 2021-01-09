@@ -1,5 +1,20 @@
-const express = require('express');
+require('dotenv').config();
+const app = require('express')();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 
-const app = express();
+server.listen(process.env.PORT, () => {
+    console.log(`Server listening on port ${process.env.PORT}`);
+});
 
-app.listen(2000, console.log('Listening on port 2000'));
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');
+})
+
+io.on('connection', (socket) => {
+    console.log('Connected');
+    socket.on('message', (msg) => {
+        console.log(msg);
+        io.emit("message", msg);
+    })
+})

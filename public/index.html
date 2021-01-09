@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Messages</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+
+    <style>
+        .col-lg-6 { width: 100%; position: fixed; bottom: 0px; padding: 40px; }
+        #messages { list-style-type: none; margin: 0; padding: 0; }
+        #messages li { padding: 5px 10px; }
+        #messages li:nth-child(odd) { background-color: #eee; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <ul id="messages"></ul>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <form action="">
+                    <div class="input-group">
+                        <input id="m" autocomplete="off" type="text" class="form-control" placeholder="Write a message" aria-label="hehe...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-secondary" type="submit">Send</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js" integrity="sha384-q2kxQ16AaE6UbzuKqyBE9/u/KzioAlnx2maXQHiDX9d4/zp8Ok3f+M7DPm+Ib6IU" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-pQQkAEnwaBkjpqZ8RU1fF1AKtTcHJwFl3pblpTlHXybJjHpMYo79HY3hIi4NKxyj" crossorigin="anonymous"></script>
+    <script src='/socket.io/socket.io.js'></script>
+    
+    <script>
+        const socket = io.connect('http://localhost:2000'); // could replace with io()
+
+        $("form").submit(() => {
+            console.log(`received message: ${$("#m").val()}`);
+            socket.emit("message", $("#m").val()); // emit message with the value of message input
+            $("#m").val(""); // clear the form
+            return false; // make sure the page doesn't refresh
+        });
+
+        socket.on("message", (msg) => {
+            console.log(msg)
+            $("#messages").append($("<li>").text(msg))
+        });
+
+    </script>
+</body>
+</html>
